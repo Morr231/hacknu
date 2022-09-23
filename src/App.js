@@ -1,14 +1,9 @@
-import './App.css';
+import Map from "./components/Map";
 
-function App() {
-  const createScene = () => {
-  }
-
+export const App = () => {
   return (
-    <div className="App">
-      App
-    </div>
+    <>
+      <Map />
+    </>
   );
 }
-
-export default App;
