@@ -77,17 +77,18 @@ function addHeatMapData(map) {
   heatmap.setMap(map);
 }
 
-function setBlueDot(map, latLng, ha, va, contentString) {
-  const scale = 5;
+function setBlueDot(map, latLng, ha, va, cona, contentString) {
   var marker = new window.google.maps.Marker({
     position: latLng,
     map: map,
+    optimized: true,
     icon: {
       path: window.google.maps.SymbolPath.CIRCLE,
-      scale: scale,
-      fillOpacity: 1,
       fillColor: '#5384ED',
-      strokeOpacity: 0
+      scale: 10,
+      fillOpacity: 1,
+      strokeWeight: 2,
+      strokeColor: '#ffffff'
     },
     title: "Info Card"
   });
@@ -103,22 +104,6 @@ function setBlueDot(map, latLng, ha, va, contentString) {
   });
 
   marker.setMap(map);
-
-  var outerMarker = new window.google.maps.Marker({
-    position: latLng,
-    map: map,
-    icon: {
-      path: window.google.maps.SymbolPath.CIRCLE,
-      scale: scale + 10 * (ha + va) / 2,
-      fillOpacity: 0.5,
-      strokeWeight: 2,
-      fillColor: '#5384ED',
-      strokeColor: '#ffffff',
-    },
-    title: "Info Card"
-  });
-
-  outerMarker.setMap(map);
 }
 
 async function drawPath(dest, orig, key) {
@@ -137,13 +122,13 @@ const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 
 function setBlueDotArrayForDevData(map, devData) {
   if (devData !== null) {
-    devData.forEach(d => {
+    devData.forEach((d, index) => {
       let date = new Date(d.Timestamp);
       let contentString =
         '<div>' +
-        '<h1>' + (d.id === undefined ? " " : d.id) + '</h1>' +
+        '<h1>' + (d.Identifier === null ? " " : d.Identifier) + '</h1>' +
         '<div>' +
-        "<p>" + (d.id === undefined ? " " : d.id) + "</p><p>Longitude: " + d.Longitude + "</p>" +
+        "<p>" + (d.Identifier === null ? " " : d.Identifier) + "</p><p>Longitude: " + d.Longitude + "</p>" +
         "<p>Latitude: " + d.Latitude + "</p><p>Altitude: " + (d.Altitude | 0) + "</p>" +
         "<p>Date: " + date.getDay() + "/" + months[date.getMonth()] + "/" + date.getFullYear() + "</p>" +
         "<p>Floor: " + (d['Floor label'] | "None") + "</p>" +
@@ -153,7 +138,19 @@ function setBlueDotArrayForDevData(map, devData) {
         "<p>Activity: " + (d.Activity.toLowerCase()) + "</p>" +
         "</div>" +
         "</div>";
-      setBlueDot(map, { lat: d.Latitude, lng: d.Longitude }, d["Horizontal accuracy"], d["Vertical accuracy"], contentString);
+      setBlueDot(
+        map,
+        { lat: d.Latitude, lng: d.Longitude },
+        d["Horizontal accuracy"],
+        d["Vertical accuracy"],
+        d["Confidence in location accuracy"],
+        contentString,
+        d.Identifier !== null,
+        (index === devData.length - 1) ?
+          0 : Math.tan(
+            devData[index].Latitude - devData[index + 1].Latitude,
+            devData[index].Longitude - devData[index + 1].Longitude) * 180 / Math.PI
+      );
     });
   }
 }
