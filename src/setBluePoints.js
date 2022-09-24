@@ -1,6 +1,6 @@
 export function setBlueDotArrayForDevData(map, devData) {
     if (devData !== null) {
-        devData.forEach((d, index) => {
+        devData.forEach((d) => {
             let date = new Date(d.Timestamp);
             let contentString =
                 '<div>' +
@@ -45,21 +45,12 @@ function setBlueDot(map, latLng, ha, va, cona, contentString) {
         title: "Info Card"
     });
 
-    const infoWindow = new window.google.maps.InfoWindow({ content: contentString })
-
-    marker.addListener("click", () => {
-        infoWindow.open({
-            anchor: marker,
-            map,
-            shouldFocus: false
-        });
-    });
-
     var outerMarker = new window.google.maps.Marker({
         position: latLng,
         map: map,
         icon: {
             path: window.google.maps.SymbolPath.CIRCLE,
+            scale: scale * cona + ha,
             fillColor: '#5384ED',
             fillOpacity: 0.5,
             strokeWeight: 2,
