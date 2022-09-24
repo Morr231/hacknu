@@ -92,6 +92,18 @@ function setBlueDot(map, latLng, ha, va, contentString) {
     title: "Info Card"
   });
 
+  const infoWindow = new window.google.maps.InfoWindow({ content: contentString })
+
+  marker.addListener("click", () => {
+    infoWindow.open({
+      anchor: marker,
+      map,
+      shouldFocus: false
+    });
+  });
+
+  marker.setMap(map);
+
   var outerMarker = new window.google.maps.Marker({
     position: latLng,
     map: map,
@@ -104,17 +116,9 @@ function setBlueDot(map, latLng, ha, va, contentString) {
       strokeColor: '#ffffff',
     },
     title: "Info Card"
-  })
-
-  const infoWindow = new window.google.maps.InfoWindow({ content: contentString })
-
-  marker.addListener("click", () => {
-    infoWindow.open({
-      anchor: marker,
-      map,
-      shouldFocus: false
-    });
   });
+
+  outerMarker.setMap(map);
 }
 
 async function drawPath(dest, orig, key) {
