@@ -11,6 +11,11 @@ function initMap() {
     tilt: 47.5,
     mapId: "90f87356969d889c",
   });
+
+  addButtons(map);
+}
+
+function addButtons(map) {
   const buttons = [
     ["Rotate Left", "rotate", 20, window.google.maps.ControlPosition.LEFT_CENTER],
     ["Rotate Right", "rotate", -20, window.google.maps.ControlPosition.RIGHT_CENTER],
